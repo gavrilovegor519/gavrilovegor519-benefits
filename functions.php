@@ -1,10 +1,10 @@
 <?php
 
-/* Plugin name: Работники компании */
+/* Plugin name: Преимущества компании */
 
-add_action('init', 'main');
+add_action('init', 'benefits_main');
 
-function main()
+function benefits_main()
 {
     $taxLabels = [
         'name'              => 'Категории преимуществ',
@@ -49,7 +49,7 @@ function main()
         'labels' => $labels,
         'public' => true,
         'has_archive' => true,
-        'menu_icon' => 'dashicons-email-alt2',
+        'menu_icon' => 'dashicons-megaphone',
         'menu_position' => 3,
         'supports' => array('title', 'editor', 'author', 'thumbnail', 'trackbacks', 'custom-fields', 'comments', 'revisions')
     );
@@ -74,9 +74,9 @@ function benefits_add_custom_box()
     }
 }
 
-add_action('post_edit_form_tag', 'post_edit_form_tag');
+add_action('post_edit_form_tag', 'benefits_post_edit_form_tag');
 
-function post_edit_form_tag($post)
+function benefits_post_edit_form_tag($post)
 {
     if ($post->post_type === 'benefits') {
         echo ' enctype="multipart/form-data"';

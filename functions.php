@@ -169,7 +169,7 @@ function true_save_meta_benefits($post_id, $post)
     return $post_id;
 }
 
-add_shortcode('staff_list', 'benefits_list_shortcode');
+add_shortcode('benefits_list', 'benefits_list_shortcode');
 
 function benefits_list_shortcode()
 {

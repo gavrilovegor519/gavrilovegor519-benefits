@@ -185,8 +185,8 @@ function benefits_list_shortcode()
         while ($query->have_posts()) {
             $query->the_post();
 
-            $name = get_post_meta(get_the_ID(), 'employee_name', true);
-            $photo = get_post_meta(get_the_ID(), 'employee_photo', true);
+            $name = get_post_meta(get_the_ID(), 'benefit_name', true);
+            $photo = get_post_meta(get_the_ID(), 'benefits_photo', true);
             $description = get_post_meta(get_the_ID(), 'benefit_description', true);
 
             $output .= '<div class="benefit-item">';

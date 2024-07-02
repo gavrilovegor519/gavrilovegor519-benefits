@@ -130,7 +130,7 @@ function true_save_meta_benefits($post_id, $post)
     }
 
     // проверяем тип записи
-    if (!in_array($post->post_type, array('staff'))) {
+    if (!in_array($post->post_type, array('benefits'))) {
         return $post_id;
     }
 
@@ -174,7 +174,7 @@ add_shortcode('benefits_list', 'benefits_list_shortcode');
 function benefits_list_shortcode()
 {
     $args = array(
-        'post_type' => 'staff',
+        'post_type' => 'benefits',
         'posts_per_page' => -1, // Выводим все записи
     );
 

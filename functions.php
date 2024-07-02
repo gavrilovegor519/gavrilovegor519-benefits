@@ -181,7 +181,7 @@ function benefits_list_shortcode()
     $query = new WP_Query($args);
 
     if ($query->have_posts()) {
-        $output = '<div class="staff-list">';
+        $output = '<div class="benefits-list">';
         while ($query->have_posts()) {
             $query->the_post();
 

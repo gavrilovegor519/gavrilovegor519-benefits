@@ -204,3 +204,125 @@ function benefits_list_shortcode()
         return 'Нет преимуществ';
     }
 }
+
+add_shortcode('benefits_categories', 'benefits_taxonomies_shortcode');
+
+function benefits_taxonomies_shortcode()
+{
+    $taxonomy = 'benefits-category';
+        
+    // Получаем список разделов таксономии
+    $terms = get_terms($taxonomy);
+        
+    // Создаём HTML для шорткода
+    $html = '<ul>';
+    foreach ($terms as $term) {
+        $html .= '<li><a href="' . get_term_link($term) . '">' . $term->name . '</a></li>';
+    }
+    $html .= '</ul>';
+        
+    // Возвращаем HTML
+    return $html;
+}
+
+class benefits_taxonomies_widget extends WP_Widget {
+    public function __construct() {
+        $widget_options = array(
+            'classname' => 'benefits_taxonomies_widget',
+            'description' => 'Категории преимуществ',
+        );
+        parent::__construct( 'benefits_taxonomies_widget', 'Категории преимуществ', $widget_options );
+    }
+    
+    public function widget( $args, $instance ) {
+        $taxonomy = 'benefits-category';
+        $title = $instance[ 'title' ];
+        
+        // Получаем список разделов таксономии
+        $terms = get_terms($taxonomy);
+        
+        // Создаём HTML для виджета
+        $html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] . '<ul>';
+        foreach ($terms as $term) {
+            $html .= '<li><a href="' . get_term_link($term) . '">' . $term->name . '</a></li>';
+        }
+        $html .= '</ul>' . $args['after_widget'];
+        
+        // Возвращаем HTML
+        echo $html;
+    }
+    
+    public function form( $instance ) {
+        $title = ! empty( $instance['title'] ) ? $instance['title'] : ''; ?>
+        <p>
+        <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
+        <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $title ); ?>" />
+        </p><?php
+    }
+    
+    public function update( $new_instance, $old_instance ) {
+        $instance = $old_instance;
+        $instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
+        return $instance;
+    }
+}
+
+class benefits_list_widget extends WP_Widget {
+    public function __construct() {
+        $widget_options = array(
+            'classname' => 'benefits_list_widget',
+            'description' => 'Список преимуществ',
+        );
+        parent::__construct( 'benefits_list_widget', 'Список преимуществ', $widget_options );
+    }
+    
+    public function widget( $args, $instance ) {
+        $title = $instance[ 'title' ];
+        
+        $args1 = array(
+            'post_type' => 'benefits',
+            'posts_per_page' => 5, // Выводим 5 записей
+        );
+    
+        $query = new WP_Query($args1);
+    
+        $output = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+        if ($query->have_posts()) {
+            $output .= '<ul>';
+            while ($query->have_posts()) {
+                $query->the_post();
+    
+                $name = get_post_meta(get_the_ID(), 'benefit_name', true);
+                
+                $output .= '<li><a href="' . get_permalink() . '">' . $name . '</a></li>';
+            }
+            wp_reset_postdata();
+            $output .= '</ul>' . $args['after_widget'];
+            echo $output;
+        } else {
+            $output .= '<p>Нет преимуществ<p>' . $args['after_widget'];
+            echo $output;
+        }
+    }
+    
+    public function form( $instance ) {
+        $title = ! empty( $instance['title'] ) ? $instance['title'] : ''; ?>
+        <p>
+        <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
+        <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $title ); ?>" />
+        </p><?php
+    }
+    
+    public function update( $new_instance, $old_instance ) {
+        $instance = $old_instance;
+        $instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
+        return $instance;
+    }
+}
+
+function benefits_register_widget() {
+    register_widget( 'benefits_taxonomies_widget' );
+    register_widget( 'benefits_list_widget' );
+}
+
+add_action( 'widgets_init', 'benefits_register_widget' );
